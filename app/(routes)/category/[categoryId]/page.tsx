@@ -7,7 +7,6 @@ import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
 import { JSX } from "react";
 
-// Jika Anda menggunakan pre-rendering statis, gunakan generateStaticParams
 export async function generateStaticParams() {
   const categories = await getCategories();
   return categories.map((category) => ({
@@ -15,19 +14,23 @@ export async function generateStaticParams() {
   }));
 }
 
-// Inlining tipe parameter dan return type
+// Komponen halaman kategori yang menggunakan pola baru untuk params
 export default async function CategoryPage({
   params,
 }: {
-  params: { categoryId: string };
+  params: Promise<{ categoryId: string }>;
 }): Promise<JSX.Element> {
-  const products = await getProducts({ categoryId: params.categoryId });
-  const category = await getCategory(params.categoryId);
+  // Await params terlebih dahulu untuk mendapatkan objek parameter yang sebenarnya
+  const resolvedParams = await params;
+
+  // Ambil produk dan kategori berdasarkan categoryId
+  const products = await getProducts({ categoryId: resolvedParams.categoryId });
+  const category = await getCategory(resolvedParams.categoryId);
 
   return (
     <div className=" bg-white">
       <Container>
-        {category && <Banner data={category.banner} />}
+        <Banner data={category.banner} />
         <div className=" px-4 sm:px-6 lg:px-8 pb-24">
           <div className=" mt-6 lg:col-span-4 lg:mt-0">
             {products.length === 0 && <NoResults />}
@@ -42,4 +45,3 @@ export default async function CategoryPage({
     </div>
   );
 }
- 
