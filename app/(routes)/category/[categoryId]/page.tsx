@@ -6,10 +6,8 @@ import Container from "@/components/ui/container";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
 
-interface CategoryPageProps{
-    params: {
-        categoryId: string
-    }
+interface Props {
+  params: { categoryId: string };
 }
 
 export async function generateStaticParams() {
@@ -21,7 +19,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
+export default async function CategoryPage({ params }: Props) {
   const products = await getProducts({ categoryId: params.categoryId });
   const category = await getCategory(params.categoryId);
 
