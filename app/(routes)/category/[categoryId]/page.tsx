@@ -5,21 +5,22 @@ import Banner from "@/components/banner";
 import Container from "@/components/ui/container";
 import NoResults from "@/components/ui/no-results";
 import ProductCard from "@/components/ui/product-card";
+import { JSX } from "react";
 
-interface Props {
-  params: { categoryId: string };
-}
-
+// Jika Anda menggunakan pre-rendering statis, gunakan generateStaticParams
 export async function generateStaticParams() {
-  // Jika Anda memiliki daftar kategori, dapatkan semua ID kategori untuk pre-rendering
-  // Contoh: Ambil daftar kategori dari API atau database
-  const categories = await getCategories(); // Anda perlu buat fungsi getCategories()
+  const categories = await getCategories();
   return categories.map((category) => ({
     categoryId: category.id,
   }));
 }
 
-export default async function CategoryPage({ params }: Props) {
+// Inlining tipe parameter dan return type
+export default async function CategoryPage({
+  params,
+}: {
+  params: { categoryId: string };
+}): Promise<JSX.Element> {
   const products = await getProducts({ categoryId: params.categoryId });
   const category = await getCategory(params.categoryId);
 
