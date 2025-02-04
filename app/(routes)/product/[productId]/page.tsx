@@ -4,16 +4,20 @@ import Gallery from "@/components/gallery";
 import Info from "@/components/info";
 import ProductList from "@/components/product-list";
 import Container from "@/components/ui/container";
+import { JSX } from "react";
 
-interface ProductPageProps {
-  params: {
-    productId: string;
-  };
-}
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ productId: string }>;
+}): Promise<JSX.Element> {
+  // Await params untuk mendapatkan objek parameter yang sebenarnya
+  const resolvedParams = await params;
 
-const ProductPage: React.FC<ProductPageProps> = async ({ params }) => {
-  const product = await getProduct(params.productId);
+  // Mengambil data produk berdasarkan productId
+  const product = await getProduct(resolvedParams.productId);
 
+  // Mengambil produk terkait menggunakan categoryId dari produk (jika ada)
   const suggestedProducts = await getProducts({
     categoryId: product?.category?.id,
   });
@@ -23,18 +27,16 @@ const ProductPage: React.FC<ProductPageProps> = async ({ params }) => {
         <div className="px-4 py-10 sm:px-6 lg:px-8">
           <div className=" lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
             {/*GALLERY */}
-            <Gallery images={product.images}/>
+            <Gallery images={product.images} />
             <div className=" mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0">
               {/*INFO */}
               <Info data={product} />
             </div>
           </div>
-          <hr className=" my-10"/>
+          <hr className=" my-10" />
           <ProductList title="Produk Terkait" items={suggestedProducts} />
         </div>
       </Container>
     </div>
   );
 };
-
-export default ProductPage;
